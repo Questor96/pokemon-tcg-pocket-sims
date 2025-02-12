@@ -19,22 +19,45 @@ POKEMON_CARDS = [
     OTHER_STAGE2
 ]
 POKEBALL = 'pokeball'
-POKEMON_COMMUNICATOR = 'pkmn_comm'
+POKEMON_COMMUNICATION = 'pkmn_comm'
 PROFESSORS_RESEARCH = 'prof_rsch'
 
 OTHER_CARD = 'o'
 
 # card/game effects
+"""
+Basic Draw
+"""
+def draw(deck: list, hand: list):
+    hand.append(deck.pop())
+
+"""
+Pokeball
+"""
+def can_pokeball(hand):
+    return POKEBALL in hand
+
 def pokeball(deck: list, hand: list):
+    hand.remove(POKEBALL)
+    
     # find a valid card
     pokeball_target_indexes = [
         index for index in list(range(len(deck))) 
         if deck[index] in BASIC_CARDS]
+    if not pokeball_target_indexes:
+        return  # no change to deck or hand
+    
     pokeball_choice = random.choice(pokeball_target_indexes)
     # modify card zones
     hand.append(deck.pop(pokeball_choice))
 
-def card_to_communicator(hand: list) -> str | None:
+"""
+Pokemon Communication
+"""
+def can_pokemon_communication(hand):
+    return POKEMON_COMMUNICATION in hand
+
+def card_to_communication(hand: list) -> str | None:
     if OTHER_STAGE2 in hand:
         return OTHER_STAGE2
     if OTHER_STAGE1 in hand:
@@ -50,27 +73,38 @@ def card_to_communicator(hand: list) -> str | None:
     else:
         return None
 
-def communicator(deck: list, hand: list, card: str):
+def pokemon_communication(deck: list, hand: list, card: str):
+    hand.remove(POKEMON_COMMUNICATION)
+    
     # find a valid card
     communicator_target_indexes = [
         index for index in list(range(len(deck)))
         if deck[index] in POKEMON_CARDS
     ]
-    communicator_choice = random.choice(communicator_target_indexes)
+    if not communicator_target_indexes:
+        return  # no change to deck or hand
     
+    communicator_choice = random.choice(communicator_target_indexes)
     # modify card zones
     hand.remove(card)
     hand.append(deck.pop(communicator_choice))
     deck.append(card)
     random.shuffle(deck)
 
+"""
+Professor's Research
+"""
+def can_professors_research(hand):
+    return PROFESSORS_RESEARCH in hand
+
 def professors_research(deck: list, hand: list):
+    hand.remove(PROFESSORS_RESEARCH)
     draw(deck, hand)
     draw(deck, hand)
 
-def draw(deck: list, hand: list):
-    hand.append(deck.pop())
-
+"""
+Draw Starting Hand
+"""
 def starting_hand_basic_first(deck: list, hand: list):
     pokeball(deck, hand)
     draw(deck, hand)

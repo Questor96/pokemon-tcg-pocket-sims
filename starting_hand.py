@@ -8,6 +8,13 @@ from src.game_rules import (
 )
 from src.util import create_shuffled_deck
 
+"""
+Comparison of the number of basics in starting hand,
+  based on the different algorithmic ways to draw a starting hand
+  1) Guarantee a basic, then draw 3 cards
+  2) Draw 3 cards, then draw a basic if no basics drawn yet
+  3) Draw 4 cards, then mulligan if no basics drawn
+"""
 
 def trial_num_basics_first(orig_deck):
     deck = create_shuffled_deck(orig_deck)
